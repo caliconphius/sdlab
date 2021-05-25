@@ -22,12 +22,27 @@ import numpy as np
 # **this function is incomplete**
 #					 ----------
 def spline_coefficient_matrix(xi):	
-	''' **complete the docstring**
+	''' 
+	Creates a matrix detailing the equation satisfied by the coefficients of the spline interpolating points xi
+
+	inputs:
+	-------
+	xi : np array
+		List of the points which the spline is interpolating
+	Outputs:
+	-------
+	A : np array
+		Matrix of coefficients needed to solve the spline equation
 	'''
 	
 	# create an array of zeros with the correct dimensions
 	#   **what are the correct dimensions? how to determine this from xi?**
 	#   **use np.zeros() to create the array**
+	npoints = len(xi)
+	dim = 4*(npoints-1)
+	A = np.zeros([dim,dim])
+	delta_x = []
+	[delta_x.append(xi[j+1]-xi[j]) for j in range(npoints-1)]
 	
 	
 	# Loop over the subintervals, add matrix coefficients for equations:
@@ -38,18 +53,45 @@ def spline_coefficient_matrix(xi):
 	#   **how to define width of the subinterval in terms of indices of xi?**
 	#   **what values go into matrix A and how do they relate to subinterval width?**
 	
-	
+	# loop sets spline as compatible with data points
+	for i in range(0,dim,4):
+		# set polynomial equal to yi at left hand side
+		A[i,i] = 1
+		# set polynomial equal to yi+1 on right hand side
+		for j in range(4):
+			A[i+1,i+j] = delta_x[int(i/4)]**j
+		
+		
+		
+		
 	# Loop over neighbouring subintervals, add matrix coefficients for equations:
 	# - polynomial gradient continuous at shared point
 	# - polynomial second derivative continuous at shared point
 	#   **how many shared points should there be (in terms of length of xi)?**
 	#   **what values go into matrix A and how do they relate to subinterval width?**
+
+	# set polynomial derivatives equal at subintervals
+	for i in range(0,dim-4,4):
+		# first derivative compatibility
+		for j in range(1,4):
+			A[i+2,i+j] = j*delta_x[int(i/4)]**(j-1)		
+		A[i+2, i+6] = -1
+		
+		# second derivative compatibility
+		for j in range(2,4):
+			A[i+3,i+j] = j*(j-1)*delta_x[int(i/4)]**(j-2)		
+		A[i+2, i+7] = -2		
 	
 	
 	# For the beginning and end points, add matrix coefficients for equations:
 	# - the polynomial second derivative is zero
 	
-			
+	# 2a_2^(0) = 0
+	A[dim-2, 2] = 2
+
+	# 2a_2^(n-1) + 6a_3^(n-1)delta_x[n-1] = 0
+	A[dim-1, dim-2] = 2
+	A[dim-1, dim-1] = 6*delta_x[-1]
 	return A
 
 # **this function is incomplete**
