@@ -1,0 +1,29 @@
+# ENGSCI233: Lab - Sampled Data
+# sdlab_questions.txt
+
+# PURPOSE:
+# Answer questions related to analysis of earthquakes, and production and injection data.
+
+# SUBMISSION:
+# - You MUST submit this file. 
+# - DO NOT rename this file.
+
+# QUESTION 1:
+# Your goal was to produce a plot of NET MASS CHANGE over time. Describe why this could not
+# be done without some sort of INTERPOLATION?
+
+# ANSWER 1:
+# **your answer here**
+
+# QUESTION 2:
+# Your goal was to produce a plot of NET MASS CHANGE over time. Describe why this could not
+# be done without some sort of numerical INTEGRATION?
+
+# ANSWER 2:
+# **your answer here**
+
+# QUESTION 3:
+# Could the operator of the field be considered responsible for the earthquakes?
+
+# ANSWER 3:
+# **your answer here**
