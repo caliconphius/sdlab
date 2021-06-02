@@ -73,14 +73,13 @@ def spline_coefficient_matrix(xi):
 		# loop sets spline as compatible with data points
 	for i in range(0,npoints-2):
 		# set first derivative compatibility
-		for j in range(1,4):
-			A[2*(npoints-1) + i,4*i+j] = j*delta_x[i]**(j-1)		
+		
+		A[2*(npoints-1) + i,(4*i+1):(4*i+4)] = [j*delta_x[i]**(j-1)	for j in range(1,4)]	
 		A[2*(npoints-1) + i, 4*i+5] = -1		
 
 	for i in range(0,npoints-2):
 		# set second derivative compatibility
-		for j in range(2,4):
-			A[3*(npoints)-4 + i,4*i+j] = j*(j-1)*delta_x[i]**(j-2)		
+		A[3*(npoints)-4 + i,(4*i+2):(4*i+4)] = [j*(j-1)*delta_x[i]**(j-2) for j in range(2,4)]			
 		A[3*(npoints)-4 + i, 4*i+6] = -2	
 
 	
@@ -98,18 +97,51 @@ def spline_coefficient_matrix(xi):
 # **this function is incomplete**
 #					 ----------
 def spline_rhs(xi, yi):
-	''' **complete the docstring**
+	''' creates the right-hand side vector in the spline matrix equation
+
+
+		inputs
+		------
+		xi : np array
+			list of points on the x-axis the spline is interpolating
+		yi : np array
+			list of points on the y-axis the spline is interpolating
+
+		outputs
+		-------
+		b : np array
+			rhs vector for the spline coefficient equation Ax = b
 	'''
-	# **use structure of spline_coefficient_matrix() as a guide for
-	#   completing this function**
+	npoints = len(yi)
+	# initialise vector
+	b = np.zeros(4 * (npoints-1))
 	
-	# delete this command once you have written your code
-	pass
+	# generate a vector with each intermediate point's y value duplicated
+	yi_prime = [yi[0]]
+	[yi_prime.extend([yi[i],yi[i]]) for i in range(1,npoints-1)]
+	yi_prime.append(yi[-1])
+
+	# set the first 2(npoints - 1) elements to these values
+	b[:2*(npoints-1)] = np.array(yi_prime)
+
+	return list(b)
 	
 # **this function is incomplete**
 #					 ----------
 def spline_interpolate(xj, xi, ak):
-	''' **complete the docstring**
+	''' interpolates the spline through points xi at the points xj
+
+		xj : np array 
+			interpolating points
+		xi : np array 
+			sampled points
+		ak : np array 
+			spline coefficients
+
+		output:
+		-------
+		yj : np.array
+			interpolated y values
 	
 		Notes
 		-----
@@ -125,9 +157,27 @@ def spline_interpolate(xj, xi, ak):
 	# 4. Evaluate CURRENT polynomial at interpolation point.
 	# 5. RETURN when all interpolation points evaluated.
 	
-	
-	pass
-		
+	# raise an error if any point is outside the range of the sampled data
+	if (any([points < xi[0] for points in xj]) or any([points > xi[-1] for points in xj])):
+		raise ValueError("A Point is out of the sampling range")
+
+	# initialise subinterval and polynomial coefficients as well as return value
+	nsamples = len(xi)
+	intervals = [xi[i:i+2] for i in range(0,nsamples-1)]
+	polynomials = [ak[i:i+4] for i in range(0, 4*(nsamples-1),4)]
+	yj = np.array([])
+	# iterated index specifying which interval we are in
+	interv = 0
+
+	# find the point x1
+	for ipoint in xj:
+		# change interval until it contains the interpolating point
+		while not ((ipoint >= intervals[interv][0]) and (ipoint <= intervals[interv][1])):
+			# iterate subinterval
+			interv +=1
+		yj = np.append(yj,polyval(polynomials[interv],ipoint-xi[interv]))
+
+	return yj
 	
 # this function is complete
 def display_matrix_equation(A,b):

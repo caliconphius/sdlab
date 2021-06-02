@@ -20,8 +20,8 @@ tol = 1.e-6
 
 # Boolean variables to run each exercise
 run_ex1 = False # boolean to run EXERCISE 1
-run_ex2 = True # boolean to run EXERCISE 2
-run_ex3 = False # boolean to run EXERCISE 3
+run_ex2 = False # boolean to run EXERCISE 2
+run_ex3 = True # boolean to run EXERCISE 3
 
 
 # EXERCISE 1: Plotting sampled data (max 20 mins)
@@ -99,7 +99,7 @@ if run_ex2:
 	b = spline_rhs(xi,yi)
 
 		# DISPLAY A and b (comment this if its annoying)
-	display_matrix_equation(A,b)
+	#display_matrix_equation(A,b)
 		
 		# CHECK A and b
 	A_soln = np.array([
@@ -127,7 +127,7 @@ if run_ex2:
 	yj_soln = np.array([119/32, 353/64, 307/64])	# correct output of SPLINE_INTERPOLATE
 	assert norm(yj - yj_soln) < tol 				# test agreement
 
-
+	
 
 # EXERCISE 3 i.e. FINAL TEST:
 # Run the code below to test your spline interpolation. If you pass the asserts,
