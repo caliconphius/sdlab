@@ -54,14 +54,14 @@ def spline_coefficient_matrix(xi):
 	#   **what values go into matrix A and how do they relate to subinterval width?**
 	
 	# loop sets spline as compatible with data points
-	for i in range(0,dim,4):
+	for i in range(0,2*(npoints-1),2):
 		# set polynomial equal to yi at left hand side
-		A[i,i] = 1
+		A[i,2*i] = 1
 		# set polynomial equal to yi+1 on right hand side
 		for j in range(4):
-			A[i+1,i+j] = delta_x[int(i/4)]**j
+			A[i+1,2*i+j] = delta_x[int(i/2)]**j
 		
-		
+	
 		
 		
 	# Loop over neighbouring subintervals, add matrix coefficients for equations:
@@ -70,18 +70,19 @@ def spline_coefficient_matrix(xi):
 	#   **how many shared points should there be (in terms of length of xi)?**
 	#   **what values go into matrix A and how do they relate to subinterval width?**
 
-	# set polynomial derivatives equal at subintervals
-	for i in range(0,dim-4,4):
-		# first derivative compatibility
+		# loop sets spline as compatible with data points
+	for i in range(0,npoints-2):
+		# set first derivative compatibility
 		for j in range(1,4):
-			A[i+2,i+j] = j*delta_x[int(i/4)]**(j-1)		
-		A[i+2, i+6] = -1
-		
-		# second derivative compatibility
+			A[2*(npoints-1) + i,4*i+j] = j*delta_x[i]**(j-1)		
+		A[2*(npoints-1) + i, 4*i+5] = -1		
+
+	for i in range(0,npoints-2):
+		# set second derivative compatibility
 		for j in range(2,4):
-			A[i+3,i+j] = j*(j-1)*delta_x[int(i/4)]**(j-2)		
-		A[i+2, i+7] = -2		
-	
+			A[3*(npoints)-4 + i,4*i+j] = j*(j-1)*delta_x[i]**(j-2)		
+		A[3*(npoints)-4 + i, 4*i+6] = -2	
+
 	
 	# For the beginning and end points, add matrix coefficients for equations:
 	# - the polynomial second derivative is zero
