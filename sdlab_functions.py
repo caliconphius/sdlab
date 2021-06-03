@@ -73,7 +73,6 @@ def spline_coefficient_matrix(xi):
 		# loop sets spline as compatible with data points
 	for i in range(0,npoints-2):
 		# set first derivative compatibility
-		
 		A[2*(npoints-1) + i,(4*i+1):(4*i+4)] = [j*delta_x[i]**(j-1)	for j in range(1,4)]	
 		A[2*(npoints-1) + i, 4*i+5] = -1		
 
@@ -141,7 +140,7 @@ def spline_interpolate(xj, xi, ak):
 		output:
 		-------
 		yj : np.array
-			interpolated y values
+			interpolated y values with the value set to 0 if interpolating point is outside range of data points
 	
 		Notes
 		-----
@@ -157,25 +156,31 @@ def spline_interpolate(xj, xi, ak):
 	# 4. Evaluate CURRENT polynomial at interpolation point.
 	# 5. RETURN when all interpolation points evaluated.
 	
-	# raise an error if any point is outside the range of the sampled data
-	if (any([points < xi[0] for points in xj]) or any([points > xi[-1] for points in xj])):
-		raise ValueError("A Point is out of the sampling range")
+	
 
 	# initialise subinterval and polynomial coefficients as well as return value
 	nsamples = len(xi)
 	intervals = [xi[i:i+2] for i in range(0,nsamples-1)]
 	polynomials = [ak[i:i+4] for i in range(0, 4*(nsamples-1),4)]
 	yj = np.array([])
+
+	# make the first interval [-inf, xi[0]] and the last interval [xi[-1], inf] and set all points interpolated here to 0
+	intervals = [np.array([-np.inf, xi[0]])] + intervals + [np.array([xi[-1], np.inf])]
+	
+	polynomials = [np.array([0]*4)] + polynomials + [np.array([0]*4)]
+
 	# iterated index specifying which interval we are in
 	interv = 0
-
+	
 	# find the point x1
 	for ipoint in xj:
 		# change interval until it contains the interpolating point
 		while not ((ipoint >= intervals[interv][0]) and (ipoint <= intervals[interv][1])):
 			# iterate subinterval
 			interv +=1
-		yj = np.append(yj,polyval(polynomials[interv],ipoint-xi[interv]))
+		# append polynomial evaluated at this point if between first and last point, otherwise append a 0
+		yj = np.append(yj,polyval(polynomials[interv],ipoint-xi[interv-1])) if interv != 0 or interv != len(xi)\
+			 else np.append(yj,polyval(polynomials[interv],0))
 
 	return yj
 	
