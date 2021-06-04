@@ -1,29 +1,39 @@
-# ENGSCI233: Lab - Sampled Data
+## ENGSCI233: Lab - Sampled Data
 # sdlab_questions.txt
 
-# PURPOSE:
+## PURPOSE:
 # Answer questions related to analysis of earthquakes, and production and injection data.
 
-# SUBMISSION:
+## SUBMISSION:
 # - You MUST submit this file. 
 # - DO NOT rename this file.
 
-# QUESTION 1:
+## QUESTION 1:
 # Your goal was to produce a plot of NET MASS CHANGE over time. Describe why this could not
 # be done without some sort of INTERPOLATION?
 
-# ANSWER 1:
-# **your answer here**
+## ANSWER 1:
+# In our data, to produce the plot of net mass change we needed to integrate over the total change in mass in the field over time. 
+# This required us to combine the data from 3 injection wells, in the equation dm/dt = iw1 - pw1 -pw2. However, these all had a different 
+# number of points (pw1 was measured every month while pw2 was measured every quarter and iw1 was measured once a year), meaning that we had
+# to figure out a good approximation of the values at the points where the data has not been collected , i.e. the data must be interpolated
+# in order to get the total mass flow rate.
 
-# QUESTION 2:
+## QUESTION 2:
 # Your goal was to produce a plot of NET MASS CHANGE over time. Describe why this could not
 # be done without some sort of numerical INTEGRATION?
 
-# ANSWER 2:
-# **your answer here**
+## ANSWER 2:
+# We have been given data concerning the mass flow rate into the field but not any information about the total change in net mass of the 
+# field. To get from a flow rate to a net change, the flow rate must be integrated. However, since we only have sampled data about the flow
+# rates and not an analytical function, we have to numerically integrate to get an approximation of the total mass change in the field.
 
-# QUESTION 3:
+## QUESTION 3:
 # Could the operator of the field be considered responsible for the earthquakes?
 
-# ANSWER 3:
-# **your answer here**
+## ANSWER 3:
+# In our data, we notice that the three measured earthquakes appear to be correlated with injection into the well, their magnitude increasing
+# only as the amount of water injected into the well approached 10^9 kg. Thus the claim by the operator that they cannot be responsible for 
+# these earthquakes needs to be more thoroughly examined. Ideally, more data should be collected from wells and through stronger conclusions 
+# can be reached regarding the correlation between injection and earthquakes.
+

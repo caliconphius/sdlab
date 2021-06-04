@@ -162,7 +162,7 @@ def spline_interpolate(xj, xi, ak):
 	nsamples = len(xi)
 	intervals = [xi[i:i+2] for i in range(0,nsamples-1)]
 	polynomials = [ak[i:i+4] for i in range(0, 4*(nsamples-1),4)]
-	yj = np.array([])
+	yj = np.zeros(len(xj))
 
 	# make the first interval [-inf, xi[0]] and the last interval [xi[-1], inf] and set all points interpolated here to 0
 	intervals = [np.array([-np.inf, xi[0]])] + intervals + [np.array([xi[-1], np.inf])]
@@ -171,16 +171,19 @@ def spline_interpolate(xj, xi, ak):
 
 	# iterated index specifying which interval we are in
 	interv = 0
-	
+	# specifies which point in xj we are looking at
+	j = 0
 	# find the point x1
 	for ipoint in xj:
 		# change interval until it contains the interpolating point
 		while not ((ipoint >= intervals[interv][0]) and (ipoint <= intervals[interv][1])):
 			# iterate subinterval
 			interv +=1
-		# append polynomial evaluated at this point if between first and last point, otherwise append a 0
-		yj = np.append(yj,polyval(polynomials[interv],ipoint-xi[interv-1])) if interv != 0 or interv != len(xi)\
-			 else np.append(yj,polyval(polynomials[interv],0))
+		# set yj[j] to polynomial evaluated at this point if between first and last point, otherwise set to 0
+		yj[j] = polyval(polynomials[interv],ipoint-xi[interv-1]) if (interv != 0 or interv != len(xi)) else 0
+
+		# iterate j index
+		j+=1
 
 	return yj
 	

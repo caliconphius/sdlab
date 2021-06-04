@@ -14,28 +14,8 @@
 import numpy as np
 from scipy.integrate import trapz
 from sdlab_functions import *
-from numpy.linalg import solve, norm
+from numpy.linalg import solve
 import matplotlib.pyplot as plt
-
-# EXERCISE: Analysis of Net Mass Changes.
-#
-# Earthquakes are sometimes associated with oil and gas production (taking mass out of the 
-# ground) and injection (putting it back in) operations.
-# 
-# It has been suggested that injection of water at one particular site, which started midway through  
-# 1993, has been responsible for a spate of recent earthquakes there. These are the data that were 
-# plotted in the first exercise of sdlab_practice.py. The operator of the field has claimed they 
-# cannot be responsible, because injection had been ongoing for almost 10 years before any earthquakes
-# occurred.
-#
-# It has been proposed the earthquakes may be related to NET MASS CHANGES in the field. Therefore,
-# it is necessary to understand how this quantity has evolved over time.
-#
-# Although data from the two production wells (mass extractors) - PW1 and PW2 - are reported regularly,
-# data reporting from the injection well, IW1, is more irregular. In addition, the operator only 
-# reports MASS RATES, not CUMULATIVE production or injection MASS.
-#
-# TO solve this problem, you will need to use both INTERPOLATION and INTEGRATION.
 
 # get data from dat files
 tm,pm1 = np.genfromtxt('PW1.dat',delimiter=',',skip_header=1).T
@@ -61,11 +41,11 @@ mass_inflow_rate = iy_interpo - pm2_interpo - pm1
 
 # integrate mass flow 
 seconds_in_a_year = 31536000 # to convert kg/s to kg/year
-k_to_G_constant = 10**-6 # convert kg to Gg
-net_mass_change = [seconds_in_a_year * trapz(mass_inflow_rate[:i], tm[:i]) * k_to_G_constant for i in range(len(tm))]
+kg_to_kt_constant = 1e-6 # convert kg to kilotonnes
+net_mass_change = [seconds_in_a_year * trapz(mass_inflow_rate[:i+1], tm[:i+1]) * kg_to_kt_constant for i in range(len(tm))]
 
 
-# create a 
+# create a figure to put the plot in
 f, ax1 = plt.subplots(nrows=1,ncols=1)
 ax2 = ax1.twinx()
 
@@ -83,16 +63,69 @@ ax2.text(2005.5, 3.2, 'M 4.3', ha= 'left', va = 'center', size=10, color = 'g')
 # add a legend and axes/plot labels 
 
 ax1.legend(loc=2, fontsize = 'small')
-ax2.legend(loc=3, fontsize = 'small')
+ax2.legend(loc=3, fontsize = 'x-small')
 ax2.set_ylim([0,10])
-ax1.set_ylabel('net change in field mass flow [Gg]')
+ax1.set_ylabel('net change in field mass flow [kt]')
 ax2.set_ylabel('Earthquake Magnitude')
 ax1.set_xlabel('time [yr]')
-ax2.set_title('Total Mass change and major earthquakes in the field over time')
+ax2.set_title('Total Mass change and major earthquakes\n in the field vs time')
 
 
 # save figure
 plt.savefig('sdlab_earthquakes.png',dpi=300)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# EXERCISE: Analysis of Net Mass Changes.
+#
+# Earthquakes are sometimes associated with oil and gas production (taking mass out of the 
+# ground) and injection (putting it back in) operations.
+# 
+# It has been suggested that injection of water at one particular site, which started midway through  
+# 1993, has been responsible for a spate of recent earthquakes there. These are the data that were 
+# plotted in the first exercise of sdlab_practice.py. The operator of the field has claimed they 
+# cannot be responsible, because injection had been ongoing for almost 10 years before any earthquakes
+# occurred.
+#
+# It has been proposed the earthquakes may be related to NET MASS CHANGES in the field. Therefore,
+# it is necessary to understand how this quantity has evolved over time.
+#
+# Although data from the two production wells (mass extractors) - PW1 and PW2 - are reported regularly,
+# data reporting from the injection well, IW1, is more irregular. In addition, the operator only 
+# reports MASS RATES, not CUMULATIVE production or injection MASS.
+#
+# TO solve this problem, you will need to use both INTERPOLATION and INTEGRATION.
+
 
 # TO DO:
 # - In sdlab_functions.py, COMPLETE the functions SPLINE_COEFFICIENT_MATRIX, SPLINE_RHS, and
